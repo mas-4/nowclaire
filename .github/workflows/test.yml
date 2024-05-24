@@ -4,16 +4,25 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Create Build Environment
+      - name: Install CMake
         run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            sudo apt-get update
+            sudo apt-get install -y cmake
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            brew install cmake
+          else
+            choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+          fi
 
       - name: Configure CMake
         run: |
