@@ -37,6 +37,11 @@ jobs:
           cmake --build .
 
       - name: Run tests
+        shell: bash
         run: |
           cd build
-          ./test
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            test.exe
+          else
+            ./test
+          fi
