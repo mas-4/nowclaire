@@ -42,7 +42,9 @@ jobs:
           cd build
           ls
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            x64/Debug/test.exe
+            ls x64
+            ls Debug
+            Debug/test.exe
           else
             ./test
           fi
