@@ -1,0 +1,182 @@
+/* CSS HEX */
+:root {
+  --link-visited: #a8dadcff;
+  --link: #457b9dff;
+  --link-hover: #1d3557ff;
+  --code: #f1faee;
+  --code-bg: #14213d;
+}
+
+.body {
+  width: 50%;
+  margin: 0 auto;
+  font-family: Arial, Helvetica, San-Serif;
+  font-size: 20px;
+}
+
+.content {
+  margin: 0 2em;
+}
+
+nav {
+  margin: 1em auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+#title {
+  font-weight: bold;
+  font-size: 2em;
+  display: inline;
+}
+
+#title a {
+  color: black;
+}
+
+#title a:hover {
+  color: black;
+}
+
+#title a:visited {
+  color: black;
+}
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  width: 15em;
+}
+
+a {
+  text-decoration: none;
+  color: var(--link);
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+a:visited {
+  color: var(--link-visited);
+}
+
+.links a {
+  text-decoration: none;
+  color: var(--link);
+}
+
+.links a:hover {
+  color: var(--link-hover);
+}
+
+.markdown {
+  font-family: "Times New Roman", Times, serif;
+}
+
+.markdown img {
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.markdown pre {
+  margin-left: 1em;
+  padding: 1em;
+  background-color: var(--code-bg);
+  color: var(--code);
+  overflow: scroll;
+}
+
+.markdown .poetry {
+  padding: 0.5em;
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  padding: 0.5em 10px;
+  margin: 1.5em 10px;
+}
+
+.markdown .poetry p {
+  margin: 0;
+  padding-left: 2em;
+  text-indent: -2em;
+}
+
+.markdown blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+
+.markdown blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+
+.markdown blockquote p {
+  display: block;
+}
+
+ul li {
+  list-style-type: "- ";
+}
+
+#footer {
+  margin: auto;
+  display: block;
+  width: fit-content;
+}
+
+#footer .links {
+  width: fit-content;
+  margin: auto;
+}
+
+#footer svg {
+  max-width: 2em;
+  width: 2em;
+  margin: 2em;
+}
+
+@media only screen and (max-width: 600px) {
+  .body {
+    width: 100%;
+  }
+  .content {
+    margin: 0;
+  }
+  nav {
+    margin: 0em auto;
+    display: flex;
+    flex-direction: column;
+  }
+  nav #title {
+    display: block;
+    font-weight: bold;
+    font-size: 1em;
+  }
+  nav .links {
+    display: block;
+    width: 100%;
+  }
+
+  #footer {
+    margin: auto;
+    display: block;
+    width: 100%;
+  }
+  #footer svg {
+    max-width: 2em;
+    width: 1em;
+    margin: 1em;
+  }
+
+  .markdown pre {
+    margin: 0;
+  }
+}
