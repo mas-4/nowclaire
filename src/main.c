@@ -8,14 +8,10 @@ int main(int argc, char **argv) {
     parse_args(argc, argv);
 
     if (config.outdir != NULL) {
-        log_debug("Output directory: ");
-        log_debug(config.outdir);
-        log_debug("\n");
+        log_debug("Output directory '%s'\n", config.outdir);
     }
     if (config.host != NULL) {
-        log_debug("Host: ");
-        log_debug(config.host);
-        log_debug("\n");
+        log_debug("Host: '%s'\n", config.host);
     }
 
     free_config();

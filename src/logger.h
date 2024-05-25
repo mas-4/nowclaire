@@ -14,17 +14,19 @@ enum LoggingLevel {
 };
 
 void set_logging_level(enum LoggingLevel l);
-void log_fatal(const char *msg);
-void log_error(const char *msg);
-void log_warn(const char *msg);
-void log_info(const char *msg);
-void log_debug(const char *msg);
+void log_debug(const char *format, ...);
+void log_info(const char *format, ...);
+void log_warn(const char *format, ...);
+void log_error(const char *format, ...);
+void log_fatal(const char *format, ...);
+
 
 #endif //LOGGER_H
 
 #ifdef LOGGER_H_IMPL
 
 #include <stdio.h>
+#include <stdarg.h>
 
 #define RED   "\x1B[31m"
 #define GREEN "\x1B[32m"
@@ -39,45 +41,80 @@ void set_logging_level(enum LoggingLevel l) {
     level = l;
 }
 
-
-void log_debug(const char *msg)
+void log_debug(const char *format, ...)
 {
     if (level <= LOG_LEVEL_DEBUG)
     {
-        printf("%s[DEBUG]%s: %s", BLUE, RESET, msg);
+        va_list args;
+        va_start(args, format);
+
+        printf("%s[DEBUG]%s: ", BLUE, RESET);
+        vprintf(format, args);
+        printf("\n");
+
+        va_end(args);
     }
 }
 
-void log_info(const char *msg)
+void log_info(const char *format, ...)
 {
     if (level <= LOG_LEVEL_INFO)
     {
-        printf("%s[INFO]%s: %s", GREEN, RESET, msg);
+        va_list args;
+        va_start(args, format);
+
+        printf("%s[INFO]%s: ", GREEN, RESET);
+        vprintf(format, args);
+        printf("\n");
+
+        va_end(args);
     }
 }
 
-void log_warn(const char *msg)
+void log_warn(const char *format, ...)
 {
     if (level <= LOG_LEVEL_WARN)
     {
-        printf("%s[WARN]%s: %s", ORANGE, RESET, msg);
+        va_list args;
+        va_start(args, format);
+
+        printf("%s[WARN]%s: ", ORANGE, RESET);
+        vprintf(format, args);
+        printf("\n");
+
+        va_end(args);
     }
 }
 
-void log_error(const char *msg)
+void log_error(const char *format, ...)
 {
     if (level <= LOG_LEVEL_ERROR)
     {
-        printf("%s[ERROR]%s: %s", RED, RESET, msg);
+        va_list args;
+        va_start(args, format);
+
+        printf("%s[ERROR]%s: ", RED, RESET);
+        vprintf(format, args);
+        printf("\n");
+
+        va_end(args);
     }
 }
 
-void log_fatal(const char *msg)
+void log_fatal(const char *format, ...)
 {
     if (level <= LOG_LEVEL_FATAL)
     {
-        printf("%s%s[FATAL]%s: %s", RED, BOLD, RESET, msg);
+        va_list args;
+        va_start(args, format);
+
+        printf("%s[FATAL]%s: ", RED, RESET);
+        vprintf(format, args);
+        printf("\n");
+
+        va_end(args);
     }
 }
+
 
 #endif // LOGGER_H_IMPL
