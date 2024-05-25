@@ -24,13 +24,14 @@ void parse_host(char *host);
 
 void print_usage()
 {
+
     printf("Usage: nowclaire [options] <input file>\n");
     printf("Options:\n");
-    printf("\t-o --output <output directory>\t\tdefault: build (if no hot reload specified)\n");
-    printf("\t--host [host[:port]]\t\tHot reload host, default: 127.0.0.1:5000\n");
-    printf("\t-v --version\t\t\t\tPrint version\n");
-    printf("\t-h --help\t\t\t\t\tPrint this message\n");
-
+    printf("\
+    -o, --output <output directory>                                     default: build (when hot reload specified)\n\
+    --host [host[:port]]                  run hot reload with host      default: 127.0.0.1:5000\n\
+    -v, --version                         print version\n\
+    -h, --help                            print this message\n");
 }
 
 int parse_args(int argc, char **argv)
