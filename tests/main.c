@@ -1,20 +1,8 @@
 #define LOGGER_H_IMPL
 
 #include <stdio.h>
-#include <logger.h>
-
-#define RED   "\x1B[31m"
-#define GREEN "\x1B[32m"
-#define RESET "\x1B[0m"
-
-#define CHECK_ERROR(x, msg) if (x != 0) { printf("\t%s[FAIL] %s%s %d\n", RED, msg, RESET, x); return x; }
-
-
-int test_hello()
-{
-    CHECK_ERROR(0, "test_hello")
-    return 0;
-}
+#include "test.h"
+#include "parse_args_test.h"
 
 
 int run_test(int (*test)(), const char *name)
@@ -29,17 +17,20 @@ int run_test(int (*test)(), const char *name)
 }
 
 int main() {
-    set_logging_level(LOG_LEVEL_DEBUG);
 
     int (*tests[])() = {
-        test_hello,
+        test_parse_args,
     };
+    const char *test_names[] = {
+        "test_parse_args",
+    };
+
     int num_tests = sizeof(tests) / sizeof(tests[0]);
 
     int result  = 0;
     for (int i = 0; i < num_tests; i++)
     {
-        result += run_test(tests[i], "test_hello");
+        result += run_test(tests[i], test_names[i]);
     }
 
     if (result == 0)
