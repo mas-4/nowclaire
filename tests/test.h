@@ -18,4 +18,13 @@
         return 1; \
     }
 
+
+#define ASSERT(x, ...) \
+    if (x == 0) { \
+        printf("\t%s[FAIL] ", RED); \
+        printf(__VA_ARGS__); \
+        printf(" %s\n", RESET); \
+        return 1; \
+    }
+
 #endif //NOWCLAIRE_TEST_H

@@ -18,6 +18,7 @@
 Config config = {0};
 char *default_host = "127.0.0.1";
 char *default_port = "5000";
+char *default_outdir = "build";
 
 void parse_host(char *host);
 
@@ -25,8 +26,8 @@ void print_usage()
 {
     printf("Usage: nowclaire [options] <input file>\n");
     printf("Options:\n");
-    printf("\t-o --output <output directory>\n");
-    printf("\t--host [host[:port]]\t\tHot reload server host\n");
+    printf("\t-o --output <output directory>\t\tdefault: build (if no hot reload specified)\n");
+    printf("\t--host [host[:port]]\t\tHot reload host, default: 127.0.0.1:5000\n");
     printf("\t-v --version\t\t\t\tPrint version\n");
     printf("\t-h --help\t\t\t\t\tPrint this message\n");
 
@@ -76,12 +77,18 @@ int parse_args(int argc, char **argv)
                 continue;
             }
             parse_host(argv[i + 1]);
+            i++;
         }
         else
         {
             config.indir = argv[i];
         }
+    }
 
+    // if host is null and output is null, set output to default
+    if (config.host == NULL && config.outdir == NULL)
+    {
+        config.outdir = default_outdir;
     }
 
     return 0;
@@ -113,5 +120,10 @@ int free_config()
     {
         free(config.host);
     }
+    config.indir = NULL;
+    config.outdir = NULL;
+    config.host = NULL;
+    config.port = NULL;
+    config.free = 0;
     return 0;
 }

@@ -18,7 +18,7 @@ int test_all_args()
     CHECK_ERROR(strcmp(config.host, "localhost"), "test_all_args: Host is not set correctly %s", config.host)
     CHECK_ERROR(strcmp(config.indir, "input"), "test_all_args: Input is not set correctly %s", config.indir)
     CHECK_ERROR(strcmp(config.port, "5000"), "test_all_args: Port is not set correctly %s", config.port)
-    CHECK_ERROR(config.free == 0, "Because we included a novel host this got parsed, so free should be 1 %d",
+    ASSERT(config.free == 1, "Because we included a novel host this got parsed, so free should be 1 %d",
                 config.free)
     return 0;
 }
@@ -33,6 +33,21 @@ int test_no_args()
     return 0;
 }
 
+int test_only_input()
+{
+    // nowclaire input
+    char *argv[] = {"nowclaire", "input"};
+    int argc = 2;
+    parse_args(argc, argv);
+    CHECK_ERROR(strcmp(config.indir, "input"), "test_only_input: Input is not set correctly %s", config.indir)
+    CHECK_ERROR(strcmp(config.outdir, "build"), "test_only_input: Output is not set correctly %s", config.outdir)
+    // host and port should be null
+    ASSERT(config.host == NULL, "test_only_input: Host should be null %s", config.host)
+    ASSERT(config.port == NULL, "test_only_input: Port should be null %s", config.port)
+
+    return 0;
+}
+
 int test_colon_port()
 {
     // nowclaire --host localhost:8080 input
@@ -42,9 +57,9 @@ int test_colon_port()
     CHECK_ERROR(strcmp(config.host, "localhost"), "test_colon_port: Host is not set correctly %s", config.host)
     CHECK_ERROR(strcmp(config.port, "8080"), "test_colon_port: Port is not set correctly %s", config.port)
     CHECK_ERROR(strcmp(config.indir, "input"), "test_colon_port: Input is not set correctly %s", config.indir)
-    CHECK_ERROR(config.outdir == NULL, "test_colon_port: Output should be null if not specified with host %s",
+    ASSERT(config.outdir == NULL, "test_colon_port: Output should be null if not specified with host %s",
                 config.outdir)
-    CHECK_ERROR(config.free == 0,
+    ASSERT(config.free == 1,
                 "test_colon_port: Because we included a novel host this got parsed, so free should be 1 %d",
                 config.free)
     return 0;
@@ -71,6 +86,7 @@ int test_parse_args()
         test_no_args,
         test_colon_port,
         test_no_host,
+        test_only_input,
     };
     for (int i = 0; i < sizeof(tests) / sizeof(tests[0]); i++)
     {
