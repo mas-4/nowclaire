@@ -34,12 +34,14 @@ void fl_populate(const char *indir, FileList *fl) { // NOLINT recursive
             continue;
         }
         if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-            fl_populate(find_file_data.cFileName, fl);
+            char subdir[MAX_PATH];
+            snprintf(subdir, sizeof(subdir), "%s\\%s", indir, find_file_data.cFileName);
+            fl_populate(subdir, fl);
             continue;
         }
         if (fl->count == fl->cap) {
             fl->cap *= 2;
-            char **new_files = (char **) realloc(fl->files, fl->cap * sizeof(char *));
+            char **new_files = (char **)realloc(fl->files, fl->cap * sizeof(char *));
             if (new_files == NULL) {
                 fprintf(stderr, "Out of memory\n");
                 fl_free(fl);
@@ -47,8 +49,9 @@ void fl_populate(const char *indir, FileList *fl) { // NOLINT recursive
             }
             fl->files = new_files;
         }
-        fl->files[fl->count] = (char *) malloc(strlen(find_file_data.cFileName) + 1);
-        strncpy(fl->files[fl->count], find_file_data.cFileName, strlen(find_file_data.cFileName) + 1);
+        char fullpath[MAX_PATH];
+        snprintf(fullpath, sizeof(fullpath), "%s\\%s", indir, find_file_data.cFileName);
+        fl->files[fl->count] = strdup(fullpath);
         fl->count++;
     } while (FindNextFile(hFind, &find_file_data) != 0);
 
@@ -62,13 +65,50 @@ void fl_populate(const char *indir, FileList *fl) { // NOLINT recursive
 #endif
 
 void fl_free(FileList *fl) {
-    for (int i = 0; i < fl->count; i++) {
-        free(fl->files[i]);
-    }
     free(fl->files);
 }
 
 const char *read_file(const char *path) {
-    // Read
+    FILE *f = fopen(path, "r");
+    if (f == NULL) {
+        fprintf(stderr, "Failed to open file '%s'\n", path);
+        return nullptr;
+    }
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    char *source = (char *)malloc(fsize + 1);
+    fread(source, fsize, 1, f);
+    fclose(f);
+    source[fsize] = 0;
     return nullptr;
+}
+
+void free_file(const char *file) {
+    free((void *)file);
+}
+
+static void ensure_path(const char *path) {
+    char *p = strdup(path);
+    for (char *c = p; *c; c++) {
+        if (*c == '\\') {
+            *c = 0;
+            CreateDirectory(p, NULL);
+            *c = '\\';
+        }
+    }
+    free(p);
+}
+
+void write_file(const char *outdir, const char *path, const char *content) {
+    char outpath[MAX_PATH];
+    snprintf(outpath, sizeof(outpath), "%s\\%s", outdir, path);
+    ensure_path(outpath); // Ensure the path exists (create if necessary
+    FILE *f = fopen(outpath, "w");
+    if (f == NULL) {
+        fprintf(stderr, "Failed to open file '%s' for writing\n", outpath);
+        return;
+    }
+    fwrite(content, strlen(content), 1, f);
+    fclose(f);
 }
