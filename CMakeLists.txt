@@ -5,8 +5,10 @@ set(CMAKE_C_STANDARD 23)
 
 # Main executable sources
 set(SRC_SOURCES
-        src/main.c
-        src/config.c
+    src/main.c
+    src/config.c
+    src/build.c
+    src/files.c
 )
 
 # Test executable sources
