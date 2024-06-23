@@ -7,12 +7,6 @@ set(CMAKE_C_STANDARD 23)
 set(SRC_SOURCES
         src/main.c
         src/config.c
-        src/scan.c
-        src/scan.h
-        src/list.c
-        src/list.h
-        src/file_handler.c
-        src/file_handler.h
 )
 
 # Test executable sources
