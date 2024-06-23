@@ -20,7 +20,24 @@ char *default_host = "127.0.0.1";
 char *default_port = "5000";
 char *default_outdir = "build";
 
-void parse_host(char *host);
+static void parse_host(char *host)
+{
+    host = strdup(host);
+    config.free = 1;
+    // if the host contains a colon, split the host and port
+    char *colon = strchr(host, ':');
+    if (colon != NULL)
+    {
+        *colon = '\0';
+        config.host = host;
+        config.port = colon + 1;
+    }
+    else
+    {
+        config.host = host;
+        config.port = default_port;
+    }
+}
 
 void print_usage()
 {
@@ -95,25 +112,7 @@ int parse_args(int argc, char **argv)
     return 0;
 }
 
-void parse_host(char *host)
-{
-    host = strdup(host);
-    config.free = 1;
-    // if the host contains a colon, split the host and port
-    char *colon = strchr(host, ':');
-    if (colon != NULL)
-    {
-        *colon = '\0';
-        config.host = host;
-        config.port = colon + 1;
-    }
-    else
-    {
-        config.host = host;
-        config.port = default_port;
-    }
 
-}
 
 int free_config()
 {
