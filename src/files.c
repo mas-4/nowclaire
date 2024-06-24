@@ -76,12 +76,12 @@ const char *read_file(const char *path) {
     }
     fseek(f, 0, SEEK_END);
     long fsize = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    char *source = (char *)malloc(fsize + 1);
+    rewind(f);
+    char *source = (char *)calloc(1, fsize + 1);
     fread(source, fsize, 1, f);
     fclose(f);
-    source[fsize] = 0;
-    return nullptr;
+    source[fsize] = '\0';
+    return source;
 }
 
 void free_file(const char *file) {
