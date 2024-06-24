@@ -12,6 +12,7 @@ void build(const char *indir, const char *outdir) {
         const char* source = read_file(fl.files[i]);
 //        const char* output = compile_file(source);
         write_file(outdir, fl.files[i], source);
+        free_file(source);
     }
     printf("Build complete\n");
     fl_free(&fl);
