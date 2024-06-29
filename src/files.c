@@ -8,7 +8,7 @@
 void fl_init(FileList *fl) {
     fl->count = 0;
     fl->cap = 8;
-    fl->files = (char **) malloc(fl->cap * sizeof(char *));
+    fl->paths = (char **) malloc(fl->cap * sizeof(char *));
 }
 
 void fl_populate(const char *indir, FileList *fl) { // NOLINT recursive
@@ -34,6 +34,13 @@ void fl_populate(const char *indir, FileList *fl) { // NOLINT recursive
             continue;
         }
         if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            // skip .git dir
+            if (strcmp(find_file_data.cFileName, ".git") == 0) // Skip .git
+                continue;
+            // skip _imports dir
+            if (strcmp(find_file_data.cFileName, "_imports") == 0)
+                continue;
+
             char subdir[MAX_PATH];
             snprintf(subdir, sizeof(subdir), "%s\\%s", indir, find_file_data.cFileName);
             fl_populate(subdir, fl);
@@ -41,17 +48,17 @@ void fl_populate(const char *indir, FileList *fl) { // NOLINT recursive
         }
         if (fl->count == fl->cap) {
             fl->cap *= 2;
-            char **new_files = (char **)realloc(fl->files, fl->cap * sizeof(char *));
+            char **new_files = (char **) realloc(fl->paths, fl->cap * sizeof(char *));
             if (new_files == NULL) {
                 fprintf(stderr, "Out of memory\n");
                 fl_free(fl);
                 exit(71);
             }
-            fl->files = new_files;
+            fl->paths = new_files;
         }
         char fullpath[MAX_PATH];
         snprintf(fullpath, sizeof(fullpath), "%s\\%s", indir, find_file_data.cFileName);
-        fl->files[fl->count] = strdup(fullpath);
+        fl->paths[fl->count] = strdup(fullpath);
         fl->count++;
     } while (FindNextFile(hFind, &find_file_data) != 0);
 
@@ -65,7 +72,7 @@ void fl_populate(const char *indir, FileList *fl) { // NOLINT recursive
 #endif
 
 void fl_free(FileList *fl) {
-    free(fl->files);
+    free(fl->paths);
 }
 
 const char *read_file(const char *path) {
@@ -77,7 +84,7 @@ const char *read_file(const char *path) {
     fseek(f, 0, SEEK_END);
     long fsize = ftell(f);
     rewind(f);
-    char *source = (char *)calloc(1, fsize + 1);
+    char *source = (char *) calloc(1, fsize + 1);
     fread(source, fsize, 1, f);
     fclose(f);
     source[fsize] = '\0';
@@ -85,7 +92,7 @@ const char *read_file(const char *path) {
 }
 
 void free_file(const char *file) {
-    free((void *)file);
+    free((void *) file);
 }
 
 static void ensure_path(const char *path) {
@@ -111,4 +118,12 @@ void write_file(const char *outdir, const char *path, const char *content) {
     }
     fwrite(content, strlen(content), 1, f);
     fclose(f);
+}
+
+void strip_prefix(const char *path, const char *prefix, char *out) {
+    if (strncmp(path, prefix, strlen(prefix)) == 0) {
+        strcpy(out, path + strlen(prefix));
+    } else {
+        strcpy(out, path);
+    }
 }
